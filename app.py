@@ -2,10 +2,8 @@ import os
 import pickle
 import streamlit as st
 import requests
-import bcrypt
+from passlib.hash import bcrypt
 import time
-import sys
-
 from requests.exceptions import RequestException, ConnectionError
 
 # --- Set Streamlit Page Config ---
@@ -65,7 +63,8 @@ def fetch_movie_details(movie_id):
         'overview': overview,
         'release_date': release_date,
         'genres': genres,
-        'rating': rating
+        'rating': rating,
+        'title': data.get('title', 'Unavailable')
     }
 
 # --- Recommend Similar Movies ---
@@ -94,7 +93,6 @@ if 'username' not in st.session_state:
     st.session_state.username = ""
 if 'show_recommendations' not in st.session_state:
     st.session_state.show_recommendations = False
-# --- Initialize Page State ---
 if 'page' not in st.session_state:
     st.session_state.page = "Login"
 
@@ -107,11 +105,11 @@ def register():
         if new_user in users:
             st.warning("⚠ Username already exists.")
         else:
-            hashed_pw = bcrypt.hashpw(new_pass.encode(), bcrypt.gensalt())
+            hashed_pw = bcrypt.hash(new_pass)
             users[new_user] = hashed_pw
             save_users()
             st.success("✅ Registration successful! Please login.")
-            st.session_state.page = "login"
+            st.session_state.page = "Login"
 
 # --- Login Page ---
 def login():
@@ -119,7 +117,7 @@ def login():
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if username in users and bcrypt.checkpw(password.encode(), users[username]):
+        if username in users and bcrypt.verify(password, users[username]):
             st.session_state.logged_in = True
             st.session_state.username = username
             st.success(f"Welcome, {username}!")
@@ -202,7 +200,10 @@ def movie_app():
 
 # --- Navigation ---
 st.sidebar.title("Navigation")
-st.session_state.page = st.sidebar.radio("Go to", ["Login", "Register", "App"] if not st.session_state.logged_in else ["App"])
+st.session_state.page = st.sidebar.radio(
+    "Go to", 
+    ["Login", "Register", "App"] if not st.session_state.logged_in else ["App"]
+)
 
 if st.session_state.page == "Login" and not st.session_state.logged_in:
     login()
