@@ -1,0 +1,4 @@
+{
+  'Movie Name 1': {'ratings': [4, 5], 'reviews': ['Nice movie!', 'Loved it']},
+  'Movie Name 2': {'ratings': [], 'reviews': []}
+}

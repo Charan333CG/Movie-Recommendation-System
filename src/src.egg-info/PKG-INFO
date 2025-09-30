@@ -1,0 +1,15 @@
+Metadata-Version: 2.2
+Name: src
+Version: 0.0.1
+Summary:  A small example  package for moviesrecommendation
+Author: KAMALNATH
+Author-email: kamalnathg1@gmail.com
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: streamlit
+Dynamic: author
+Dynamic: author-email
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
